@@ -10,8 +10,11 @@
 </head>
 <body>
 <div class="shell">
-  <aside class="rail" id="rail">
-    <div class="brand"><div class="brand-mark">万象图鉴</div><div class="brand-sub">王者万象棋 · 非官方资料库</div></div>
+  <button class="rail-backdrop" id="railBackdrop" type="button" aria-label="关闭导航"></button>\n  <aside class="rail" id="rail">
+    <div class="rail-head">
+      <div class="brand"><div class="brand-mark">万象图鉴</div><div class="brand-sub">王者万象棋 · 非官方资料库</div></div>
+      <button class="rail-close" id="railClose" type="button" aria-label="关闭导航">×</button>
+    </div>
     <nav class="nav" id="nav" aria-label="资料分类"></nav>
     <div class="rail-foot">
       <button id="themeButton" type="button">切换明暗</button>
@@ -34,7 +37,10 @@
         </div>
         <div class="intro-meta" id="metrics"></div>
       </section>
-      <div class="health" id="health"></div>
+      <div class="health-wrap">
+        <div class="health" id="health"></div>
+        <button class="health-more" id="healthMore" type="button">数据状态</button>
+      </div>
       <section id="catalog">
         <div class="section-head">
           <div><h2 id="sectionTitle">英雄</h2><p id="sectionSubtitle">按阵营、品阶与关键词筛选</p></div>
