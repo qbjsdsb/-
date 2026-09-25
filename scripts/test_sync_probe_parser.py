@@ -14,19 +14,27 @@ if spec is None or spec.loader is None:
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 
-cases = [
-    ("heroes", '<span>85<!-- --> / <!-- -->85</span>', 85, 85),
-    ("equips", 'aspect-[1/1] <span>79<!-- --> / <!-- -->79</span>', 78, 79),
-    ("talents", '<span>10 / 10</span><span>255<!-- --> / <!-- -->255</span>', 254, 255),
-    ("players", '<p>21 位棋手：技能与专属牌</p>', 21, 21),
-    ("effects", '<div>99 张效果牌</div>', 99, 99),
-]
+card_html = """
+<details><summary>英雄<!-- -->索引（<!-- -->85<!-- -->）</summary></details>
+<details><summary>装备<!-- -->索引（<!-- -->79<!-- -->）</summary></details>
+<details><summary>天赋<!-- -->索引（<!-- -->255<!-- -->）</summary></details>
+<details><summary>效果牌<!-- -->索引（<!-- -->99<!-- -->）</summary></details>
+"""
+expected = {"heroes": 85, "equips": 79, "talents": 255, "effects": 99}
+actual = module.parse_card_index_counts(card_html)
 
 failures = []
-for key, body, baseline, expected in cases:
-    actual = module.parse_live_count(body, key, baseline)
-    if actual != expected:
-        failures.append(f"{key}: expected {expected}, got {actual}")
+if actual != expected:
+    failures.append(f"card index parser expected {expected}, got {actual}")
+
+player_cases = [
+    ('<p>21 位棋手：技能与专属牌</p>', 21),
+    ('<span>21 / 21</span>', 21),
+]
+for body, wanted in player_cases:
+    got = module.parse_player_count(body)
+    if got != wanted:
+        failures.append(f"player parser expected {wanted}, got {got}")
 
 if not module.plausible(80, 79):
     failures.append("plausible rejected normal +1 update")
