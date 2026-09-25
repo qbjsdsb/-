@@ -130,6 +130,8 @@ function searchFields(x){
   const strong=[
     ...(Array.isArray(x?.kw)?x.kw:[]),
     x?.camp,x?.role,x?.cat,x?.kind,x?.cls,x?.grp,x?.stage,x?.timing,x?.classificationLabel,
+    ...(Array.isArray(x?.camps)?x.camps:[]),
+    ...(Array.isArray(x?.tags)?x.tags:[]),
     ...(Array.isArray(x?.core)?x.core:[]),
     ...(Array.isArray(x?.heroes)?x.heroes:[])
   ].filter(Boolean);
@@ -175,11 +177,10 @@ function globalMatches(q){
     const ranked=rows.map(x=>({x,score:searchScore(x,type,q)}))
       .filter(r=>r.score>0)
       .sort((a,b)=>b.score-a.score||nameOf(a.x).localeCompare(nameOf(b.x),"zh-CN"))
-      .slice(0,7)
-      .map(r=>r.x);
-    if(ranked.length)groups.push([type,ranked])
+      .slice(0,7);
+    if(ranked.length)groups.push([type,ranked.map(r=>r.x),ranked[0].score])
   }
-  return groups
+  return groups.sort((a,b)=>b[2]-a[2])
 }
 function exactHeroForSearch(q){
   const needle=normSearch(q);
