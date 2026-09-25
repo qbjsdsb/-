@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: "23 3 * * *"
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/sync_data.py"
+      - "scripts/test_sync_probe_parser.py"
+      - ".github/workflows/sync-data.yml"
 
 permissions:
   contents: write
