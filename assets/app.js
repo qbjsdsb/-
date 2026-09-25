@@ -1,3 +1,5 @@
+import {renderSolver} from "./solver.js";
+
 
 const DATASET_META={
   heroes:{label:"英雄",subtitle:"技能、定位、阵营与构筑关系",filters:[["camp","阵营"],["quality","品阶"],["role","定位"]]},
@@ -97,6 +99,7 @@ function applyTheme(){document.documentElement.dataset.theme=state.theme==="ligh
 function topRoute(parts){
   if(parts[0]==="library"||parts[0]==="entity")return"library";
   if(parts[0]==="comp")return"comps";
+  if(parts[0]==="solver")return"tools";
   if(parts[0]==="more")return"more";
   return parts[0]||"home"
 }
@@ -299,6 +302,7 @@ function renderRoute(){
   else if(parts[0]==="comp")renderCompDetail(view,parts[1]);
   else if(parts[0]==="entity")renderEntityDetail(view,parts[1],parts[2]);
   else if(parts[0]==="version")renderVersion(view);
+  else if(parts[0]==="solver")renderSolver(view,state);
   else if(parts[0]==="tools")renderTools(view);
   else if(parts[0]==="more")renderMore(view);
   else renderHome(view);
@@ -601,15 +605,18 @@ function renderVersion(view){
 }
 function renderTools(view){
   view.innerHTML=`
-    <header class="page-head"><div><div class="eyebrow">TOOLS</div><h1>工具</h1><p>先把已经有可靠数据支撑的能力做成工具，后续再加入构筑器、Diff 和截图识别。</p></div></header>
+    <header class="page-head"><div><div class="eyebrow">TOOLS</div><h1>工具</h1><p>把资料变成可计算的决策工具：先做可解释求解，再逐步扩展到自由构筑、Diff 和截图识别。</p></div></header>
+    <section class="section"><div class="section-title-row"><div><h2>决策工具</h2><p>用当前版本牌库参数和本站已核验阵容，比较成型稳定性与结构强度。</p></div></div><div class="tool-list">
+      <a class="tool-row tool-row-link" href="#/solver"><div><strong>阵容求解器</strong></div><div><p>按最稳、最强、吃分、上限或低成本，模拟公共牌库与商店随机性并排序阵容。</p></div><div class="tool-state">可用</div></a>
+    </div></section>
     <section class="section"><div class="section-title-row"><div><h2>机制关系检索</h2><p>点击关键词，跨英雄、天赋、效果牌和机制搜索。</p></div></div><div class="keyword-cloud">${KEYWORDS.map(k=>`<button class="keyword-button" data-tool-search="${esc(k)}">${esc(k)} · ${keywordCount(k)}</button>`).join("")}</div></section>
-    <section class="section"><div class="section-title-row"><div><h2>路线</h2><p>新工具必须进入既有产品结构，不扩散一级导航。</p></div></div><div class="tool-list">
-      <div class="tool-row"><div><strong>阵容构筑器</strong></div><div><p>拖拽站位、装备与天赋，复用现有英雄和阵容数据。</p></div><div class="tool-state">规划</div></div>
+    <section class="section"><div class="section-title-row"><div><h2>路线</h2><p>新工具继续进入既有产品结构，不扩散一级导航。</p></div></div><div class="tool-list">
+      <div class="tool-row"><div><strong>自由阵容构筑器</strong></div><div><p>从 85 名英雄直接生成组合，不再只比较已有阵容，并支持站位、装备和天赋约束。</p></div><div class="tool-state">下一步</div></div>
       <div class="tool-row"><div><strong>版本 Entity Diff</strong></div><div><p>按英雄、装备、天赋查看版本前后变化，而不是只读 patch 文本。</p></div><div class="tool-state">规划</div></div>
       <div class="tool-row"><div><strong>截图识别</strong></div><div><p>从对局截图识别英雄与装备，再连接关系和阵容建议。</p></div><div class="tool-state">后续</div></div>
     </div></section>
   `;
-  $$("[data-tool-search]").forEach(b=>b.addEventListener("click",()=>openSearch(b.dataset.toolSearch)))
+  $("[data-tool-search]").forEach(b=>b.addEventListener("click",()=>openSearch(b.dataset.toolSearch)))
 }
 function renderMore(view){
   view.innerHTML=`

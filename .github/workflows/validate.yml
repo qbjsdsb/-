@@ -18,13 +18,19 @@ jobs:
       - name: Test live probe parser
         run: python3 scripts/test_sync_probe_parser.py
       - name: Check JavaScript syntax
-        run: node --check assets/app.js
+        run: |
+          node --check assets/app.js
+          node --check assets/solver.js
+      - name: Check solver model
+        run: python3 -m json.tool data/solver-model.json >/dev/null
       - name: Check required V1 files
         shell: bash
         run: |
           test -f index.html
           test -f assets/styles.css
           test -f data/manifest.json
+          test -f data/solver-model.json
+          test -f assets/solver.js
           test -f docs/WANXIANG_DESIGN_SYSTEM.md
           test -f docs/UPDATE_RUNBOOK.md
           grep -q 'assets/app.js' index.html
