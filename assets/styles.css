@@ -47,7 +47,7 @@ button,input{font:inherit}
 button,a{-webkit-tap-highlight-color:transparent}
 a{color:inherit}
 button{color:inherit}
-img{display:block;max-width:100%}
+img{display:block;max-width:100%}\nimg[data-fallback].failed{display:none}
 .hidden{display:none!important}
 .app-shell{min-height:100vh}
 .sidebar{
