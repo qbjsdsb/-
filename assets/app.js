@@ -123,21 +123,104 @@ function openSearch(prefill=""){
   requestAnimationFrame(()=>input.focus())
 }
 function closeSearch(){if($("#searchDialog").open)$("#searchDialog").close()}
-function globalMatches(q){
-  if(!q.trim())return[];
-  const needle=q.trim().toLowerCase();
-  const groups=[];
-  for(const [type,rows] of Object.entries(state.data)){
-    if(type==="camps")continue;
-    const hits=(rows||[]).filter(x=>text(x).toLowerCase().includes(needle)).slice(0,8);
-    if(hits.length)groups.push([type,hits])
+function normSearch(v){
+  return String(v??"").normalize("NFKC").toLowerCase().replace(/\s+/g,"").trim()
+}
+function searchFields(x){
+  const strong=[
+    ...(Array.isArray(x?.kw)?x.kw:[]),
+    x?.camp,x?.role,x?.cat,x?.kind,x?.cls,x?.grp,x?.stage,x?.timing,x?.classificationLabel,
+    ...(Array.isArray(x?.camps)?x.camps:[]),
+    ...(Array.isArray(x?.tags)?x.tags:[]),
+    ...(Array.isArray(x?.core)?x.core:[]),
+    ...(Array.isArray(x?.heroes)?x.heroes:[])
+  ].filter(Boolean);
+  const abilityNames=[
+    ...(Array.isArray(x?.skills)?x.skills.map(s=>s?.name):[]),
+    x?.skill?.t,x?.skill?.name,x?.miji?.t,x?.exclusive?.t
+  ].filter(Boolean);
+  return{strong,abilityNames}
+}
+function searchScore(x,type,query){
+  const needle=normSearch(query);
+  if(!needle)return 0;
+  const name=normSearch(nameOf(x));
+  let score=0;
+  if(name===needle)score=Math.max(score,10000);
+  else if(name.startsWith(needle))score=Math.max(score,8200);
+  else if(name.includes(needle))score=Math.max(score,6500);
+
+  const {strong,abilityNames}=searchFields(x);
+  for(const value of strong){
+    const field=normSearch(value);
+    if(field===needle)score=Math.max(score,5200);
+    else if(field.includes(needle))score=Math.max(score,3900)
   }
-  const comps=(state.data.comps||[]).filter(x=>text(x).toLowerCase().includes(needle)).slice(0,8);
-  if(comps.length&&!groups.some(([t])=>t==="comps"))groups.push(["comps",comps]);
-  return groups
+  for(const value of abilityNames){
+    const field=normSearch(value);
+    if(field===needle)score=Math.max(score,4700);
+    else if(field.includes(needle))score=Math.max(score,3500)
+  }
+
+  const primary=normSearch(descOf(x));
+  if(primary.includes(needle))score=Math.max(score,1800);
+  if(!score&&normSearch(text(x)).includes(needle))score=650;
+
+  const typeBoost={heroes:90,comps:80,players:60,equips:50,talents:40,effects:30,buffs:20,tips:10,news:0}[type]||0;
+  return score?score+typeBoost:0
+}
+function globalMatches(q){
+  const order=["heroes","players","equips","talents","effects","comps","buffs","tips","news"];
+  const groups=[];
+  for(const type of order){
+    const rows=type==="comps"?(state.data.comps||[]):(state.data[type]||[]);
+    const ranked=rows.map(x=>({x,score:searchScore(x,type,q)}))
+      .filter(r=>r.score>0)
+      .sort((a,b)=>b.score-a.score||nameOf(a.x).localeCompare(nameOf(b.x),"zh-CN"))
+      .slice(0,7);
+    if(ranked.length)groups.push([type,ranked.map(r=>r.x),ranked[0].score])
+  }
+  return groups.sort((a,b)=>b[2]-a[2])
+}
+function exactHeroForSearch(q){
+  const needle=normSearch(q);
+  return (state.data.heroes||[]).find(h=>normSearch(h.name)===needle)||null
+}
+function heroSearchContext(hero){
+  if(!hero)return"";
+  const rel=relationForHero(hero);
+  const items=[
+    ...rel.equips.slice(0,2).map(({item,count})=>({type:"equips",item,meta:`${count} 次阵容样本`})),
+    ...rel.talents.slice(0,2).map(({item,count})=>({type:"talents",item,meta:`${count} 次阵容样本`})),
+    ...rel.comps.slice(0,3).map(item=>({type:"comps",item,meta:item.timing||"相关阵容"}))
+  ];
+  if(!items.length)return"";
+  return `<section class="search-group search-context">
+    <div class="search-group-title">${esc(hero.name)} · 构筑关系</div>
+    ${items.map(({type,item,meta})=>{
+      const href=type==="comps"?compRoute(item):entityRoute(type,item);
+      return `<div class="search-result" data-href="${href}" data-search-item>${thumb(item)}<div><strong>${esc(nameOf(item))}</strong><small>${esc(typeLabel(type))} · ${esc(meta)}</small></div><span>↗</span></div>`
+    }).join("")}
+  </section>`
+}
+function resetSearchSelection(){state.searchIndex=-1;$("[data-search-item]").forEach(el=>el.classList.remove("active"))}
+function moveSearchSelection(delta){
+  const items=$("[data-search-item]");
+  if(!items.length)return;
+  state.searchIndex=(Number.isInteger(state.searchIndex)?state.searchIndex:-1)+delta;
+  if(state.searchIndex<0)state.searchIndex=items.length-1;
+  if(state.searchIndex>=items.length)state.searchIndex=0;
+  items.forEach((el,i)=>el.classList.toggle("active",i===state.searchIndex));
+  items[state.searchIndex].scrollIntoView({block:"nearest"})
+}
+function activateSearchSelection(){
+  const items=$("[data-search-item]");
+  const el=items[state.searchIndex];
+  if(el)el.click()
 }
 function renderGlobalSearch(q){
   const box=$("#globalSearchResults");
+  state.searchIndex=-1;
   if(!q.trim()){
     box.innerHTML=`<div class="search-group"><div class="search-group-title">常用机制</div><div class="keyword-cloud" style="padding:0 14px 10px">${KEYWORDS.slice(0,12).map(k=>`<button class="keyword-button" data-search="${esc(k)}">${esc(k)}</button>`).join("")}</div></div>`;
     bindSearchShortcuts();
@@ -148,16 +231,17 @@ function renderGlobalSearch(q){
     box.innerHTML=`<div class="empty-state"><strong>没有找到“${esc(q)}”</strong><p>试试机制名称、英雄名、装备名或阵容核心。</p></div>`;
     return
   }
-  box.innerHTML=groups.map(([type,rows])=>`
+  const context=heroSearchContext(exactHeroForSearch(q));
+  box.innerHTML=context+groups.map(([type,rows])=>`
     <section class="search-group">
       <div class="search-group-title">${esc(typeLabel(type))}</div>
       ${rows.map(x=>{
         const href=type==="comps"?compRoute(x):entityRoute(type,x);
-        return `<div class="search-result" data-href="${href}">${thumb(x)}<div><strong>${esc(nameOf(x))}</strong><small>${esc(descOf(x)||tagsFor(x).join(" · "))}</small></div><span>↗</span></div>`
+        return `<div class="search-result" data-href="${href}" data-search-item>${thumb(x)}<div><strong>${esc(nameOf(x))}</strong><small>${esc(descOf(x)||tagsFor(x).join(" · "))}</small></div><span>↗</span></div>`
       }).join("")}
     </section>`
   ).join("");
-  $$(".search-result[data-href]").forEach(el=>el.addEventListener("click",()=>{closeSearch();location.hash=el.dataset.href}))
+  $("[data-search-item][data-href]").forEach(el=>el.addEventListener("click",()=>{closeSearch();location.hash=el.dataset.href}))
 }
 function bindSearchShortcuts(){
   $$("[data-search]").forEach(b=>b.addEventListener("click",()=>{const q=b.dataset.search;$("#globalSearchInput").value=q;renderGlobalSearch(q)}))
@@ -166,6 +250,11 @@ function bindStatic(){
   $("#searchTrigger").addEventListener("click",()=>openSearch());
   $("#searchClose").addEventListener("click",closeSearch);
   $("#globalSearchInput").addEventListener("input",e=>renderGlobalSearch(e.target.value));
+  $("#globalSearchInput").addEventListener("keydown",e=>{
+    if(e.key==="ArrowDown"){e.preventDefault();moveSearchSelection(1)}
+    else if(e.key==="ArrowUp"){e.preventDefault();moveSearchSelection(-1)}
+    else if(e.key==="Enter"&&state.searchIndex>=0){e.preventDefault();activateSearchSelection()}
+  });
   $("#themeButton").addEventListener("click",()=>{
     state.theme=state.theme==="dark"?"light":"dark";
     localStorage.setItem("wxq-theme",state.theme);applyTheme()

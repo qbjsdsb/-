@@ -391,7 +391,7 @@ kbd{
   display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;
   min-height:52px;padding:6px 14px;cursor:pointer
 }
-.search-result:hover{background:var(--surface-2)}
+.search-result:hover{background:var(--surface-2)}\n.search-result.active{background:var(--surface-2);box-shadow:inset 2px 0 0 var(--accent)}\n.search-context{border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--accent-soft) 35%,transparent)}
 .search-result .thumb{width:34px;height:34px}
 .search-result strong{display:block;font-size:11px}
 .search-result small{display:block;margin-top:2px;color:var(--text-3);font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
