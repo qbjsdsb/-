@@ -10,17 +10,22 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
-      - name: Validate JSON catalog
+      - name: Validate JSON catalog and relations
         run: python3 scripts/validate_data.py
+      - name: Test live probe parser
+        run: python3 scripts/test_sync_probe_parser.py
       - name: Check JavaScript syntax
         run: node --check assets/app.js
-      - name: Check required site files
+      - name: Check required V1 files
         shell: bash
         run: |
           test -f index.html
           test -f assets/styles.css
           test -f data/manifest.json
+          test -f docs/WANXIANG_DESIGN_SYSTEM.md
+          test -f docs/UPDATE_RUNBOOK.md
           grep -q 'assets/app.js' index.html
           grep -q '万象图鉴' index.html
