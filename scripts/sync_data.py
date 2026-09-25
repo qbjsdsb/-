@@ -58,7 +58,7 @@ def parse_live_count(body: str, key: str) -> int | None:
         "effects": [r"(\\d{1,3})\\s*(?:张)?效果牌"],
     }
     for pattern in patterns.get(key, []):
-        match = re.search(pattern, body)
+        match = re.search(pattern, clean)
         if match:
             value = int(match.group(1))
             if value > 0:
