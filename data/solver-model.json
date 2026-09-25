@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "gameVersion": "1.3.1",
+  "verifiedAt": "2026-09-26",
+  "inventoryByTier": {
+    "1": 14,
+    "2": 11,
+    "3": 9,
+    "4": 7,
+    "5": 6
+  },
+  "shopOdds": {
+    "1": {"1": 1, "2": 0, "3": 0, "4": 0, "5": 0},
+    "2": {"1": 0.5, "2": 0.5, "3": 0, "4": 0, "5": 0},
+    "3": {"1": 0.2, "2": 0.5, "3": 0.3, "4": 0, "5": 0},
+    "4": {"1": 0.15, "2": 0.3, "3": 0.35, "4": 0.2, "5": 0},
+    "5": {"1": 0.01, "2": 0.2, "3": 0.4, "4": 0.3, "5": 0.09},
+    "6": {"1": 0.01, "2": 0.09, "3": 0.4, "4": 0.35, "5": 0.15}
+  },
+  "defaults": {
+    "objective": "stable",
+    "level": 5,
+    "refreshes": 10,
+    "contested": 0,
+    "simulations": 1200
+  },
+  "objectives": {
+    "stable": {
+      "label": "最稳",
+      "weights": {"availability": 0.42, "synergy": 0.22, "power": 0.18, "flexibility": 0.18}
+    },
+    "strong": {
+      "label": "最强",
+      "weights": {"power": 0.42, "synergy": 0.23, "ceiling": 0.2, "availability": 0.15}
+    },
+    "top4": {
+      "label": "吃分",
+      "weights": {"availability": 0.34, "midgame": 0.28, "synergy": 0.18, "power": 0.12, "flexibility": 0.08}
+    },
+    "ceiling": {
+      "label": "上限",
+      "weights": {"ceiling": 0.5, "power": 0.25, "synergy": 0.15, "availability": 0.1}
+    },
+    "budget": {
+      "label": "低成本",
+      "weights": {"lowCost": 0.38, "availability": 0.3, "midgame": 0.17, "synergy": 0.15}
+    }
+  },
+  "sources": [
+    {
+      "label": "万象棋知识库·机制与规则",
+      "url": "https://wxqwiki.com/mechanics",
+      "covers": ["shopOdds"]
+    },
+    {
+      "label": "18183·公共牌库规则",
+      "url": "https://www.18183.com/gonglue/202608/jd6s5084.html",
+      "covers": ["inventoryByTier", "shopOdds"]
+    }
+  ],
+  "notes": [
+    "模型分不是实战胜率。",
+    "当前候选空间是本站已核验阵容；后续可扩展为全英雄组合搜索。",
+    "公共牌库与商店概率属于可版本化参数，游戏更新后应先校准本文件。"
+  ]
+}
