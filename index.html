@@ -382,7 +382,7 @@ function renderSection() {
   renderFilters(searchMode ? [] : (state.data[state.active] || []));
   const items = getFilteredItems();
   $('#resultMeta').textContent = `${items.length} 条结果${searchMode ? ' · 跨全部资料类型' : ''}`;
-  $('#cardGrid').innerHTML = items.map(item => renderCard(item, searchMode ? item.__type : state.active)).join('');
+  $('#cardGrid').innerHTML = items.map((item, idx) => renderCard(item, searchMode ? item.__type : state.active, idx)).join('');
   $('#emptyState').classList.toggle('hidden', items.length > 0);
   $$('#cardGrid [data-index]').forEach(card => card.addEventListener('click', () => {
     const idx = Number(card.dataset.index);
@@ -411,14 +411,13 @@ function renderFilters(items) {
   }));
 }
 
-function renderCard(item, type) {
+function renderCard(item, type, idx) {
   const name = itemName(item);
   const desc = itemDesc(item);
   const q = qualityLabel(item.quality || item.tier);
   const tags = [item.camp,item.cat,item.kind,item.cls,item.role,item.position,item.grp,item.timing,item.classificationLabel]
     .flatMap(v => Array.isArray(v)?v:[v]).filter(Boolean).slice(0,4);
   const typeLabel = SECTION_META[type]?.label || type;
-  const idx = getFilteredItems().indexOf(item);
   return `<article class="data-card" data-index="${idx}">
     <div class="card-top"><div><div class="meta">${escapeHtml(typeLabel)}</div><div class="card-title">${escapeHtml(name)}</div></div>${q?`<span class="quality">${escapeHtml(q)}</span>`:''}</div>
     ${tags.length?`<div class="tag-row">${tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>`:''}
