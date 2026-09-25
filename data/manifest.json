@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "siteVersion": "0.2.0",
+  "gameVersion": "1.3.1",
+  "gameVersionDate": "2026-09-24",
+  "catalogSnapshotDate": "2026-09-16",
+  "liveReferenceDate": "2026-09-25",
+  "upstream": {
+    "name": "万象棋谱 WXHub",
+    "repository": "the-beating-light-of-the-nail/wanxiang-qipu",
+    "branch": "master",
+    "note": "结构化基础数据；按其 data/README 说明用于二次开发并注明出处。"
+  },
+  "expectedLiveCounts": {
+    "heroes": 85,
+    "equips": 79,
+    "talents": 255,
+    "effects": 99,
+    "players": 21
+  },
+  "datasets": {
+    "heroes": "./data/catalog/heroes.json",
+    "players": "./data/catalog/players.json",
+    "equips": "./data/catalog/equips.json",
+    "talents": "./data/catalog/talents.json",
+    "effects": "./data/catalog/effects.json",
+    "comps": "./data/catalog/comps.json",
+    "buffs": "./data/catalog/buffs.json",
+    "tips": "./data/catalog/tips.json",
+    "news": "./data/catalog/news.json"
+  },
+  "overrides": "./data/overrides.json",
+  "patches": "./data/patches.json"
+}
