@@ -93,14 +93,23 @@ for key, rel in (manifest.get("datasets") or {}).items():
     if duplicates:
         errors.append(f"duplicate keys in {key}: {', '.join(duplicates[:10])}")
 
+verified = manifest.get("verifiedCounts") or {}
+for key, verified_count in verified.items():
+    if key not in catalog:
+        errors.append(f"verified count references missing dataset: {key}")
+        continue
+    actual = len(catalog[key])
+    if actual != verified_count:
+        errors.append(f"verified count mismatch {key}: merged={actual}, verified={verified_count}")
+
 expected = manifest.get("expectedLiveCounts") or {}
 for key, expected_count in expected.items():
     if key not in catalog:
-        errors.append(f"expected count references missing dataset: {key}")
+        warnings.append(f"live reference points to missing dataset: {key}")
         continue
     actual = len(catalog[key])
     if actual != expected_count:
-        errors.append(f"live count mismatch {key}: merged={actual}, expected={expected_count}")
+        warnings.append(f"live drift {key}: merged={actual}, live={expected_count}")
 
 # Asset path hygiene. Remote assets are allowed; local game assets must be root-relative.
 for key, rows in catalog.items():
