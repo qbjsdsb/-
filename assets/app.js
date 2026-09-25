@@ -234,7 +234,7 @@ function renderHome(view){
 
     <div class="patch-strip" id="homePatch">
       <div class="patch-version"><strong>v${esc(p.version)}</strong><small>${esc(p.date)}</small></div>
-      <div class="patch-summary"><strong>当前版本</strong><p>${esc(changes.map(c=>c.name).slice(0,4).join(" · "))}</p></div>
+      <div class="patch-summary"><strong>当前版本${liveDrifts().length?` · <span class="data-drift">${liveDrifts().length} 项资料待同步</span>`:""}</strong><p>${esc(changes.map(c=>c.name).slice(0,4).join(" · "))}</p></div>
       <span class="patch-link">查看完整更新 →</span>
     </div>
 
