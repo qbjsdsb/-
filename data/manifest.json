@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "siteVersion": "0.2.0",
+  "siteVersion": "1.0.0-beta.1",
   "gameVersion": "1.3.1",
   "gameVersionDate": "2026-09-24",
   "catalogSnapshotDate": "2026-09-16",
@@ -27,8 +27,10 @@
     "comps": "./data/catalog/comps.json",
     "buffs": "./data/catalog/buffs.json",
     "tips": "./data/catalog/tips.json",
-    "news": "./data/catalog/news.json"
+    "news": "./data/catalog/news.json",
+    "camps": "./data/catalog/camps.json"
   },
   "overrides": "./data/overrides.json",
-  "patches": "./data/patches.json"
+  "patches": "./data/patches.json",
+  "assetBase": "https://wxq.whatsyour.fun"
 }

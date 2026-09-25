@@ -11,7 +11,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "data" / "catalog"
 MANIFEST = ROOT / "data" / "manifest.json"
 UPSTREAM = "https://raw.githubusercontent.com/the-beating-light-of-the-nail/wanxiang-qipu/master/data"
-FILES = ["heroes","players","equips","talents","effects","comps","buffs","tips","news"]
+FILES = ["heroes","players","equips","talents","effects","comps","buffs","tips","news","camps"]
 
 def fetch_text(url: str) -> str:
     req=urllib.request.Request(url,headers={"User-Agent":"wanxiang-atlas-sync/1"})

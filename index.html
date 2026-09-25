@@ -3,65 +3,70 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0c0d0f">
-  <meta name="description" content="王者万象棋非官方资料库：英雄、棋手、装备、天赋、效果牌、阵容、机制与版本更新。">
-  <title>万象图鉴 · 王者万象棋资料库</title>
+  <meta name="theme-color" content="#0B0D10">
+  <meta name="description" content="王者万象棋资料、阵容、版本与构筑关系工具。">
+  <title>万象图鉴 · 王者万象棋</title>
   <link rel="stylesheet" href="./assets/styles.css">
 </head>
 <body>
-<div class="shell">
-  <button class="rail-backdrop" id="railBackdrop" type="button" aria-label="关闭导航"></button>\n  <aside class="rail" id="rail">
-    <div class="rail-head">
-      <div class="brand"><div class="brand-mark">万象图鉴</div><div class="brand-sub">王者万象棋 · 非官方资料库</div></div>
-      <button class="rail-close" id="railClose" type="button" aria-label="关闭导航">×</button>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="#/home" aria-label="万象图鉴首页">
+      <span class="brand-mark">WX</span>
+      <span><strong>万象图鉴</strong><small>TACTICAL CODEX</small></span>
+    </a>
+
+    <nav class="primary-nav" aria-label="主导航">
+      <a href="#/home" data-nav="home"><span class="nav-icon">⌂</span><span>首页</span></a>
+      <a href="#/library/heroes" data-nav="library"><span class="nav-icon">◇</span><span>资料库</span></a>
+      <a href="#/comps" data-nav="comps"><span class="nav-icon">▦</span><span>阵容</span></a>
+      <a href="#/version" data-nav="version"><span class="nav-icon">↺</span><span>版本</span></a>
+      <a href="#/tools" data-nav="tools"><span class="nav-icon">⌘</span><span>工具</span></a>
+    </nav>
+
+    <div class="sidebar-context hidden" id="libraryContext">
+      <div class="sidebar-label">资料类型</div>
+      <nav id="librarySideNav" class="secondary-nav" aria-label="资料类型"></nav>
     </div>
-    <nav class="nav" id="nav" aria-label="资料分类"></nav>
-    <div class="rail-foot">
-      <button id="themeButton" type="button">切换明暗</button>
-      <a href="#patches">当前版本</a>
+
+    <div class="sidebar-foot">
+      <button id="themeButton" type="button">切换主题</button>
       <a href="https://github.com/qbjsdsb/-" target="_blank" rel="noopener">GitHub ↗</a>
+      <span id="sidebarVersion">加载版本…</span>
     </div>
   </aside>
-  <main class="main">
+
+  <section class="workspace">
     <header class="topbar">
-      <button class="menu" id="menuButton" type="button" aria-label="菜单">☰</button>
-      <label class="search"><input id="searchInput" autocomplete="off" placeholder="搜索英雄、装备、技能、阵容、关键词…"><kbd>/</kbd></label>
-      <div class="top-meta"><span class="status-dot"></span><span class="version" id="versionText">加载资料…</span></div>
+      <a class="mobile-brand" href="#/home" aria-label="万象图鉴首页">万象图鉴</a>
+      <button class="search-trigger" id="searchTrigger" type="button" aria-haspopup="dialog">
+        <span class="search-icon">⌕</span>
+        <span class="search-placeholder">搜索英雄、装备、天赋、阵容、机制…</span>
+        <kbd>/</kbd>
+      </button>
+      <button class="version-pill" id="versionPill" type="button">v—</button>
     </header>
-    <div class="content">
-      <section class="intro">
-        <div>
-          <div class="kicker">WANGZHE WANXIANGQI / COMPENDIUM</div>
-          <h1>王者万象棋资料库</h1>
-          <p>英雄、棋手、装备、天赋、效果牌、阵容与版本记录。资料按来源和版本保存，可检索、筛选并持续更新。</p>
-        </div>
-        <div class="intro-meta" id="metrics"></div>
-      </section>
-      <div class="health-wrap">
-        <div class="health" id="health"></div>
-        <button class="health-more" id="healthMore" type="button">数据状态</button>
-      </div>
-      <section id="catalog">
-        <div class="section-head">
-          <div><h2 id="sectionTitle">英雄</h2><p id="sectionSubtitle">按阵营、品阶与关键词筛选</p></div>
-          <div class="toolbar">
-            <div class="seg" aria-label="布局"><button type="button" data-layout="list" class="active">列表</button><button type="button" data-layout="grid">网格</button></div>
-          </div>
-        </div>
-        <div class="filters" id="filters"></div>
-        <div class="result-meta" id="resultMeta"></div>
-        <div class="records" id="records"></div>
-        <div class="empty hidden" id="empty">没有找到匹配资料。</div>
-      </section>
-      <section class="patches" id="patches">
-        <div class="section-head"><div><h2>当前版本</h2><p id="patchMeta"></p></div></div>
-        <div class="patch-grid" id="patchGrid"></div>
-      </section>
-      <footer class="source-note" id="sourceNote"></footer>
-    </div>
-  </main>
+    <main class="view" id="view" tabindex="-1"></main>
+  </section>
 </div>
-<dialog id="detailDialog"><button class="detail-close" id="detailClose" type="button" aria-label="关闭">×</button><div class="detail" id="detailBody"></div></dialog>
+
+<nav class="mobile-nav" aria-label="移动端主导航">
+  <a href="#/home" data-mobile-nav="home"><span>⌂</span><small>首页</small></a>
+  <a href="#/library/heroes" data-mobile-nav="library"><span>◇</span><small>资料</small></a>
+  <a href="#/comps" data-mobile-nav="comps"><span>▦</span><small>阵容</small></a>
+  <a href="#/more" data-mobile-nav="more"><span>•••</span><small>更多</small></a>
+</nav>
+
+<dialog class="command-dialog" id="searchDialog">
+  <div class="command-head">
+    <span class="search-icon">⌕</span>
+    <input id="globalSearchInput" autocomplete="off" placeholder="搜索英雄、装备、天赋、阵容、机制…" aria-label="全站搜索">
+    <button id="searchClose" type="button" aria-label="关闭搜索">×</button>
+  </div>
+  <div class="command-hint">试试：云中君、牺牲、图腾、古币、复生</div>
+  <div class="command-results" id="globalSearchResults"></div>
+</dialog>
+
 <div class="toast hidden" id="toast"></div>
 <script type="module" src="./assets/app.js"></script>
 </body>
