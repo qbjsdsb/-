@@ -127,15 +127,13 @@ def main() -> None:
     existing_live = manifest.get("expectedLiveCounts") or {}
     live_counts, live_successes = probe_live_counts(existing_live)
     manifest["expectedLiveCounts"] = live_counts
-
-    now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0)
-    manifest["lastUpstreamSyncAt"] = now.isoformat()
     manifest["snapshotCounts"] = snapshot_counts
-    manifest["lastLiveProbeAt"] = now.isoformat()
 
+    # Avoid a daily no-op commit. Dates change only when the live reference itself changes.
     if live_successes:
-        manifest["liveReferenceDate"] = now.date().isoformat()
         manifest["liveProbeCoverage"] = sorted(live_successes)
+    if live_counts != existing_live:
+        manifest["liveReferenceDate"] = dt.datetime.now(dt.timezone.utc).date().isoformat()
 
     MANIFEST.write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
