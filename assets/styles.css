@@ -157,7 +157,7 @@ kbd{
 .patch-version strong{font-size:15px;font-variant-numeric:tabular-nums}
 .patch-version small{display:block;margin-top:2px;color:var(--text-3);font-size:9px}
 .patch-summary{min-width:0}
-.patch-summary strong{font-size:12px;font-weight:650}
+.patch-summary strong{font-size:12px;font-weight:650}\n.data-drift{color:var(--accent);font-size:9px;font-weight:650}
 .patch-summary p{margin:3px 0 0;color:var(--text-2);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .patch-link{font-size:11px;color:var(--text-3)}
 .section{padding-top:40px}

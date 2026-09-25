@@ -234,7 +234,7 @@ function renderHome(view){
 
     <div class="patch-strip" id="homePatch">
       <div class="patch-version"><strong>v${esc(p.version)}</strong><small>${esc(p.date)}</small></div>
-      <div class="patch-summary"><strong>当前版本</strong><p>${esc(changes.map(c=>c.name).slice(0,4).join(" · "))}</p></div>
+      <div class="patch-summary"><strong>当前版本${liveDrifts().length?` · <span class="data-drift">${liveDrifts().length} 项资料待同步</span>`:""}</strong><p>${esc(changes.map(c=>c.name).slice(0,4).join(" · "))}</p></div>
       <span class="patch-link">查看完整更新 →</span>
     </div>
 
@@ -279,6 +279,9 @@ function quickLink(href,title,sub,count){
 }
 function keywordCount(k){
   return ["heroes","talents","effects","buffs"].reduce((n,type)=>n+(state.data[type]||[]).filter(x=>text(x).includes(k)).length,0)
+}
+function liveDrifts(){
+  return Object.entries(state.manifest?.expectedLiveCounts||{}).filter(([key,live])=>(state.data[key]?.length||0)!==live)
 }
 function libraryFiltered(type){
   const rows=state.data[type]||[];
