@@ -1,0 +1,12 @@
+{
+  "_comment": "人工核验修正层。自动同步不会覆盖本文件。键为数据集名称，每项以 id 或 name 匹配并覆盖对应字段；也可 append 新记录。",
+  "heroes": [],
+  "players": [],
+  "equips": [],
+  "talents": [],
+  "effects": [],
+  "comps": [],
+  "buffs": [],
+  "tips": [],
+  "news": []
+}
