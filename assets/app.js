@@ -280,6 +280,9 @@ function quickLink(href,title,sub,count){
 function keywordCount(k){
   return ["heroes","talents","effects","buffs"].reduce((n,type)=>n+(state.data[type]||[]).filter(x=>text(x).includes(k)).length,0)
 }
+function liveDrifts(){
+  return Object.entries(state.manifest?.expectedLiveCounts||{}).filter(([key,live])=>(state.data[key]?.length||0)!==live)
+}
 function libraryFiltered(type){
   const rows=state.data[type]||[];
   const q=state.libraryQuery.trim().toLowerCase();
