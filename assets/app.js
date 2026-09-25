@@ -25,7 +25,7 @@ const CAMP_COLOR={
 const state={
   manifest:null,patches:null,data:{},layout:localStorage.getItem("wxq-layout")||"list",
   theme:localStorage.getItem("wxq-theme")||"dark",
-  libraryQuery:"",filters:{},compCamp:"全部"
+  libraryQuery:"",filters:{},libraryType:null,compCamp:"全部"
 };
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=v=>String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
@@ -298,6 +298,8 @@ function distinct(rows,field){
   return [...out].slice(0,20)
 }
 function renderLibrary(view,type){
+  if(state.libraryType&&state.libraryType!==type){state.libraryQuery="";state.filters={}}
+  state.libraryType=type;
   const meta=DATASET_META[type];
   if(!meta){setRoute("library/heroes");return}
   const rows=state.data[type]||[];
