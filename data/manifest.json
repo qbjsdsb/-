@@ -4,7 +4,7 @@
   "gameVersion": "1.3.1",
   "gameVersionDate": "2026-09-24",
   "catalogSnapshotDate": "2026-09-16",
-  "liveReferenceDate": "2026-10-01",
+  "liveReferenceDate": "2026-11-12",
   "upstream": {
     "name": "万象棋谱 WXHub",
     "repository": "the-beating-light-of-the-nail/wanxiang-qipu",
@@ -14,8 +14,8 @@
   "expectedLiveCounts": {
     "heroes": 85,
     "players": 21,
-    "equips": 79,
-    "talents": 258,
+    "equips": 83,
+    "talents": 291,
     "effects": 99
   },
   "datasets": {
